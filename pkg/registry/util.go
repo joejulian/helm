@@ -256,3 +256,15 @@ func basicAuth(username, password string) string {
 	auth := username + ":" + password
 	return base64.StdEncoding.EncodeToString([]byte(auth))
 }
+
+// authHeader adds the correct authorizaiton header based on whether username and password, or just password is set
+func authHeader(username, password string, headers *http.Header) {
+	if username == "" && password == "" {
+		return
+	}
+	if username == "" {
+		headers.Set("Authorization", fmt.Sprintf("Bearer %s", password))
+		return
+	}
+	headers.Set("Authorization", fmt.Sprintf("Basic %s", basicAuth(username, password)))
+}
